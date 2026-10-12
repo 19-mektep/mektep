@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="kk" class="h-full bg-slate-50">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мектеп құжаттары — Электрондық құжаттар жүйесі</title>
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Google Fonts Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'sans-serif'],
+        },
+        colors: {
+          brand: {
+            50: '#eff6ff',
+            100: '#dbeafe',
+            500: '#3b82f6',
+            600: '#2563eb',
+            700: '#1d4ed8',
+            800: '#1e40af',
+            900: '#0f172a',
+          }
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+  /* Print Styles */
+  @media print {
+    body * { visibility: hidden; }
+    #printableDocModal, #printableDocModal * { visibility: visible; }
+    #printableDocModal { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: white; }
+    .no-print { display: none !important; }
+  }
+</style>
+</head>
+<body class="h-full text-slate-800 bg-slate-50 flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+<div class="min-h-screen flex flex-col lg:flex-row">
+
+  <!-- Mobile Top Header -->
+  <header class="lg:hidden bg-slate-900 text-white p-4 flex items-center justify-between sticky top-0 z-40 shadow-md">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center text-xl font-bold text-white shadow-sm">📚</div>
+      <div>
+        <h1 class="font-bold text-sm leading-tight">Мектеп құжаттары</h1>
+        <p class="text-[10px] text-slate-400">«№19 орта мектеп» МКМ</p>
+      </div>
+    </div>
+    <button id="mobileMenuBtn" class="p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </header>
+
+  <!-- Sidebar Backdrop (Mobile) -->
+  <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-900/60 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity"></div>
+
+  <!-- Sidebar Container -->
+  <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-72 bg-slate-900 text-slate-300 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none">
+    <div>
+      <!-- Logo Header -->
+      <div class="p-5 border-b border-slate-800/80 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-sky-400 flex items-center justify-center text-2xl shadow-lg shadow-brand-600/30">
+          📚
+        </div>
+        <div>
+          <h2 class="font-bold text-white text-base tracking-wide">Мектеп құжаттары</h2>
+          <p class="text-xs text-slate-400 font-normal">Электрондық құжат айналымы</p>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="p-3 space-y-1 text-sm font-medium overflow-y-auto max-h-[calc(100vh-160px)]" id="mainNav">
+        <a data-page="home" class="nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer text-white bg-brand-600 shadow-md shadow-brand-600/20 transition-all">
+          <div class="flex items-center gap-3"><span class="text-lg">🏠</span> <span>Басты бет</span></div>
+        </a>
+        <a data-page="mine" class="nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 hover:text-white transition-all text-slate-300">
+          <div class="flex items-center gap-3"><span class="text-lg">📁</span> <span>Менің құжаттарым</span></div>
+          <span id="badgeMine" class="text-xs bg-slate-800 text-brand-400 px-2 py-0.5 rounded-full font-semibold">0</span>
+        </a>
+        <div class="pt-3 pb-1 px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Бөлімдер</div>
+        <a data-page="education" class="nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 hover:text-white transition-all text-slate-300">
+          <div class="flex items-center gap-3"><span class="text-lg">📚</span> <span>Оқу процесі</span></div>
+        </a>
+        <a data-page="staff" class="nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 hover:text-white transition-all text-slate-300">
+          <div class="flex items-center gap-3"><span class="text-lg">👥</span> <span>Кадрлық құжаттар</span></div>
+        </a>
+        <a data-page="categories" class="nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 hover:text-white transition-all text-slate-300 pl-8">
+          <div class="flex items-center gap-3"><span class="text-lg">🏷️</span> <span>Мұғалім санаттары</span></div>
+        </a>
+        <a data-page="finance" class="nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 hover:text-white transition-all text-slate-300">
+          <div class="flex items-center gap-3"><span class="text-lg">💰</span> <span>Қаржылық құжаттар</span></div>
+        </a>
+        <a data-page="orders" class="nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 hover:text-white transition-all text-slate-300">
+          <div class="flex items-center gap-3"><span class="text-lg">📋</span> <span>Бұйрықтар</span></div>
+        </a>
+        <a data-page="protocols" class="nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 hover:text-white transition-all text-slate-300">
+          <div class="flex items-center gap-3"><span class="text-lg">📝</span> <span>Хаттамалар</span></div>
+        </a>
+        <a data-page="plans" class="nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 hover:text-white transition-all text-slate-300">
+          <div class="flex items-center gap-3"><span class="text-lg">📅</span> <span>Жоспарлар</span></div>
+        </a>
+        <a data-page="reports" class="nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 hover:text-white transition-all text-slate-300">
+          <div class="flex items-center gap-3"><span class="text-lg">📊</span> <span>Есептер</span></div>
+        </a>
+
+        <div class="pt-3 pb-1 px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Жүйе</div>
+        <a data-page="search" class="nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 hover:text-white transition-all text-slate-300">
+          <span class="text-lg">🔎</span> <span>Құжаттарды іздеу</span>
+        </a>
+        <a data-page="users" class="nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 hover:text-white transition-all text-slate-300">
+          <span class="text-lg">👤</span> <span>Пайдаланушылар</span>
+        </a>
+        <a data-page="settings" class="nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 hover:text-white transition-all text-slate-300">
+          <span class="text-lg">⚙️</span> <span>Баптаулар</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- User Profile Footer -->
+    <div class="p-3 border-t border-slate-800/80 bg-slate-950/40">
+      <div class="flex items-center justify-between p-2 rounded-xl bg-slate-800/60">
+        <div class="flex items-center gap-3 overflow-hidden">
+          <div class="w-9 h-9 rounded-full bg-slate-700 border border-slate-600 flex items-center justify-center text-lg flex-shrink-0" id="userAvatar">
+            👤
+          </div>
+          <div class="truncate">
+            <h4 class="text-xs font-bold text-white truncate" id="userNameDisplay">Айнагуль Галымжановна</h4>
+            <p class="text-[11px] text-slate-400 truncate" id="userRoleDisplay">Директор</p>
+          </div>
+        </div>
+        <button id="switchUserBtn" title="Қолданушыны ауыстыру" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition">
+          🔄
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="flex-1 flex flex-col min-w-0 overflow-x-hidden">
+    <!-- Top Header Bar -->
+    <header class="hidden lg:flex h-16 bg-white border-b border-slate-200/80 px-8 items-center justify-between sticky top-0 z-30 shadow-xs">
+      <div class="flex items-center gap-3 text-sm">
+        <span class="text-slate-400">Ұйым:</span>
+        <span class="font-bold text-slate-800">«№19 орта мектеп» МКМ</span>
+        <span class="bg-blue-50 text-blue-700 text-xs px-2.5 py-0.5 rounded-full font-medium border border-blue-100">Электрондық архив</span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <button onclick="openDocModal()" class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition shadow-md shadow-brand-600/20 active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          <span>Жаңа құжат қосу</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Dynamic Content Area -->
+    <div class="p-4 sm:p-6 lg:p-8 flex-1 max-w-7xl w-full mx-auto">
+      
+      <!-- PAGE: Home Dashboard -->
+      <section id="home" class="page active space-y-6">
+        <!-- Welcome Banner -->
+        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-brand-900 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+          <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <span class="inline-block bg-brand-500/20 text-brand-300 border border-brand-500/30 text-xs px-3 py-1 rounded-full font-medium mb-3">Жұмыс кабинеті</span>
+              <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Қош келдіңіз, <span id="welcomeName" class="text-brand-400">Айнагуль Галымжановна</span>!</h1>
+              <p class="text-slate-300 text-sm mt-1 max-w-xl">Мектептің бірыңғай электрондық құжаттама және бұйрықтар базасына қош келдіңіз.</p>
+            </div>
+            <button onclick="openDocModal()" class="bg-white text-slate-900 hover:bg-slate-100 font-bold text-xs px-5 py-3 rounded-xl transition shadow-lg flex items-center gap-2 whitespace-nowrap">
+              <span>✍️ Құжат жазу / файл тіркеу</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Statistics Row -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center text-2xl flex-shrink-0">📁</div>
+            <div>
+              <p class="text-xs font-semibold text-slate-500">Барлық құжаттар</p>
+              <h3 class="text-2xl font-black text-slate-900 mt-0.5" id="statTotal">0</h3>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl flex-shrink-0">📄</div>
+            <div>
+              <p class="text-xs font-semibold text-slate-500">Менің құжаттарым</p>
+              <h3 class="text-2xl font-black text-slate-900 mt-0.5" id="statMine">0</h3>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl flex-shrink-0">📎</div>
+            <div>
+              <p class="text-xs font-semibold text-slate-500">Тіркелген файлдар</p>
+              <h3 class="text-2xl font-black text-slate-900 mt-0.5" id="statFiles">0</h3>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl flex-shrink-0">⏱️</div>
+            <div>
+              <p class="text-xs font-semibold text-slate-500">Қараудағы құжаттар</p>
+              <h3 class="text-2xl font-black text-slate-900 mt-0.5" id="statPending">0</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Column Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Categories Matrix -->
+          <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+              <h2 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                <span>📂</span> <span>Құжаттар бөлімдері</span>
+              </h2>
+              <span class="text-xs text-slate-400">Санаттар бойынша шарлау</span>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div onclick="navigateToPage('education')" class="cursor-pointer p-4 rounded-xl border border-slate-100 hover:border-brand-200 bg-slate-50/50 hover:bg-brand-50/40 transition text-center group">
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">📚</div>
+                <h4 class="font-bold text-xs text-slate-800">Оқу процесі</h4>
+                <p class="text-[11px] text-slate-500 mt-1" id="catCountEducation">0 құжат</p>
+              </div>
+              <div onclick="navigateToPage('staff')" class="cursor-pointer p-4 rounded-xl border border-slate-100 hover:border-brand-200 bg-slate-50/50 hover:bg-brand-50/40 transition text-center group">
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">👥</div>
+                <h4 class="font-bold text-xs text-slate-800">Кадрлық</h4>
+                <p class="text-[11px] text-slate-500 mt-1" id="catCountStaff">0 құжат</p>
+              </div>
+              <div onclick="navigateToPage('categories')" class="cursor-pointer p-4 rounded-xl border border-slate-100 hover:border-brand-200 bg-slate-50/50 hover:bg-brand-50/40 transition text-center group">
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">🏷️</div>
+                <h4 class="font-bold text-xs text-slate-800">Мұғалім санаттары</h4>
+                <p class="text-[11px] text-slate-500 mt-1" id="catCountCategories">0 құжат</p>
+              </div>
+              <div onclick="navigateToPage('finance')" class="cursor-pointer p-4 rounded-xl border border-slate-100 hover:border-brand-200 bg-slate-50/50 hover:bg-brand-50/40 transition text-center group">
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">💰</div>
+                <h4 class="font-bold text-xs text-slate-800">Қаржылық</h4>
+                <p class="text-[11px] text-slate-500 mt-1" id="catCountFinance">0 құжат</p>
+              </div>
+              <div onclick="navigateToPage('orders')" class="cursor-pointer p-4 rounded-xl border border-slate-100 hover:border-brand-200 bg-slate-50/50 hover:bg-brand-50/40 transition text-center group">
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">📋</div>
+                <h4 class="font-bold text-xs text-slate-800">Бұйрықтар</h4>
+                <p class="text-[11px] text-slate-500 mt-1" id="catCountOrders">0 құжат</p>
+              </div>
+              <div onclick="navigateToPage('protocols')" class="cursor-pointer p-4 rounded-xl border border-slate-100 hover:border-brand-200 bg-slate-50/50 hover:bg-brand-50/40 transition text-center group">
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">📝</div>
+                <h4 class="font-bold text-xs text-slate-800">Хаттамалар</h4>
+                <p class="text-[11px] text-slate-500 mt-1" id="catCountProtocols">0 құжат</p>
+              </div>
+              <div onclick="navigateToPage('plans')" class="cursor-pointer p-4 rounded-xl border border-slate-100 hover:border-brand-200 bg-slate-50/50 hover:bg-brand-50/40 transition text-center group">
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">📅</div>
+                <h4 class="font-bold text-xs text-slate-800">Жоспарлар</h4>
+                <p class="text-[11px] text-slate-500 mt-1" id="catCountPlans">0 құжат</p>
+              </div>
+              <div onclick="navigateToPage('reports')" class="cursor-pointer p-4 rounded-xl border border-slate-100 hover:border-brand-200 bg-slate-50/50 hover:bg-brand-50/40 transition text-center group">
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">📊</div>
+                <h4 class="font-bold text-xs text-slate-800">Есептер</h4>
+                <p class="text-[11px] text-slate-500 mt-1" id="catCountReports">0 құжат</p>
+              </div>
+              <div onclick="navigateToPage('mine')" class="cursor-pointer p-4 rounded-xl border border-slate-100 hover:border-brand-200 bg-slate-50/50 hover:bg-brand-50/40 transition text-center group">
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">📁</div>
+                <h4 class="font-bold text-xs text-slate-800">Менің құжаттарым</h4>
+                <p class="text-[11px] text-brand-600 font-semibold mt-1" id="catCountMine">0 құжат</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- School Announcements Widget -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                <h2 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                  <span>📢</span> <span>Хабарландырулар</span>
+                </h2>
+                <span class="text-xs text-brand-600 font-medium cursor-pointer" onclick="showToast('Хабарландырулар жаңартылды')">Жаңарту</span>
+              </div>
+              <ul class="space-y-3.5 text-xs">
+                <li class="p-3 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+                  <div class="flex items-center justify-between font-bold text-slate-800">
+                    <span>Жаңа оқу жылына дайындық</span>
+                    <span class="text-[10px] text-slate-400">12.08.2026</span>
+                  </div>
+                  <p class="text-slate-600">Оқу-әдістемелік кешендерді бекіту бұйрығы жарияланды.</p>
+                </li>
+                <li class="p-3 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+                  <div class="flex items-center justify-between font-bold text-slate-800">
+                    <span>Еңбек демалысы кестесі</span>
+                    <span class="text-[10px] text-slate-400">08.08.2026</span>
+                  </div>
+                  <p class="text-slate-600">Педагогтардың жылдық демалыс мерзімдері бекітілді.</p>
+                </li>
+                <li class="p-3 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+                  <div class="flex items-center justify-between font-bold text-slate-800">
+                    <span>Платформаны жаңарту</span>
+                    <span class="text-[10px] text-slate-400">01.08.2026</span>
+                  </div>
+                  <p class="text-slate-600">Файлдарды сақтау көлемі арттырылды.</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Documents Table Block -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div>
+              <h2 class="font-bold text-slate-900 text-base">Соңғы қосылған құжаттар</h2>
+              <p class="text-xs text-slate-500">Жүйеге жаңадан енгізілген бұйрықтар мен материалдар</p>
+            </div>
+            <button onclick="navigateToPage('mine')" class="text-xs text-brand-600 font-semibold hover:underline">Барлығын көру →</button>
+          </div>
+          <div id="homeRecentDocsContainer" class="overflow-x-auto">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE: My Documents -->
+      <section id="mine" class="page hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
+          <div>
+            <h1 class="text-2xl font-extrabold text-slate-900">📁 Менің құжаттарым</h1>
+            <p class="text-xs text-slate-500 mt-1">Өзіңіз жазған немесе тіркеген барлық электрондық құжаттар</p>
+          </div>
+          <button onclick="openDocModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition shadow-md shadow-brand-600/20 flex items-center gap-2 self-start sm:self-auto">
+            <span>+ Жаңа құжат енгізу</span>
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input id="mineSearchInput" oninput="handleMineSearch(this.value)" type="text" placeholder="Құжат атауы немесе автор бойынша іздеу..." class="flex-1 text-xs border border-slate-300 rounded-xl px-4 py-2.5 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+            <select id="mineCategoryFilter" onchange="filterMineDocs()" class="text-xs border border-slate-300 rounded-xl px-3 py-2.5 outline-none focus:border-brand-500">
+              <option value="ALL">Барлық бөлімдер</option>
+              <option value="Оқу процесі">Оқу процесі</option>
+              <option value="Кадрлық құжаттар">Кадрлық құжаттар</option>
+              <option value="Қаржылық құжаттар">Қаржылық құжаттар</option>
+              <option value="Бұйрықтар">Бұйрықтар</option>
+              <option value="Хаттамалар">Хаттамалар</option>
+              <option value="Жоспарлар">Жоспарлар</option>
+              <option value="Есептер">Есептер</option>
+            </select>
+          </div>
+          <div id="mineDocsContainer" class="overflow-x-auto">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE TEMPLATE: Categories (Education, Staff, Finance, Orders, Protocols, Plans, Reports) -->
+      <section id="education" class="page hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-extrabold text-slate-900">📚 Оқу процесі</h1>
+            <p class="text-xs text-slate-500 mt-1">Оқу жоспарлары, сабақ кестесі, бағдарламалар мен оқу ісі материалдары</p>
+          </div>
+          <button onclick="openDocModalForCategory('Оқу процесі')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition shadow-md shadow-brand-600/20 flex items-center gap-2">
+            <span>+ Оқу процесіне құжат жүктеу</span>
+          </button>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs" id="educationCategoryContainer"></div>
+      </section>
+
+      <section id="staff" class="page hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-extrabold text-slate-900">👥 Кадрлық құжаттар</h1>
+            <p class="text-xs text-slate-500 mt-1">Қызметкерлер тізімі, еңбек шарттары, аттестация және жеке іс-қағаздар</p>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="navigateToPage('categories')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-2">
+              <span>🏷️ Мұғалім санаттарына өту</span>
+            </button>
+            <button onclick="openDocModalForCategory('Кадрлық құжаттар')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition shadow-md shadow-brand-600/20 flex items-center gap-2">
+              <span>+ Кадрлық құжат жүктеу</span>
+            </button>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs" id="staffCategoryContainer"></div>
+      </section>
+
+      <section id="categories" class="page hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-extrabold text-slate-900">🏷️ Мұғалім санаттары</h1>
+            <p class="text-xs text-slate-500 mt-1">Педагогтердің біліктілік санаттары (педагог-модератор, педагог-сарапшы, педагог-зерттеуші, педагог-маман)</p>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="navigateToPage('staff')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-2">
+              <span>← Кадрлық бөлімге қайту</span>
+            </button>
+            <button onclick="openDocModalForCategory('Мұғалім санаттары')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition shadow-md shadow-brand-600/20 flex items-center gap-2">
+              <span>+ Санат құжатын жүктеу</span>
+            </button>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs" id="categoriesCategoryContainer"></div>
+      </section>
+
+      <section id="finance" class="page hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-extrabold text-slate-900">💰 Қаржылық құжаттар</h1>
+            <p class="text-xs text-slate-500 mt-1">Мектеп сметалары, бухгалтерлік есептер және мемлекеттік сатып алулар</p>
+          </div>
+          <button onclick="openDocModalForCategory('Қаржылық құжаттар')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition shadow-md shadow-brand-600/20 flex items-center gap-2">
+            <span>+ Қаржылық құжат жүктеу</span>
+          </button>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs" id="financeCategoryContainer"></div>
+      </section>
+
+      <section id="orders" class="page hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-extrabold text-slate-900">📋 Бұйрықтар</h1>
+            <p class="text-xs text-slate-500 mt-1">Мектеп директорының негізгі қызметтік және кадрлық бұйрықтары</p>
+          </div>
+          <button onclick="openDocModalForCategory('Бұйрықтар')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition shadow-md shadow-brand-600/20 flex items-center gap-2">
+            <span>+ Бұйрық қосу / жүктеу</span>
+          </button>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs" id="ordersCategoryContainer"></div>
+      </section>
+
+      <section id="protocols" class="page hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-extrabold text-slate-900">📝 Хаттамалар</h1>
+            <p class="text-xs text-slate-500 mt-1">Педагогикалық кеңес, ата-аналар комитеті және өндірістік жиналыстар хаттамасы</p>
+          </div>
+          <button onclick="openDocModalForCategory('Хаттамалар')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition shadow-md shadow-brand-600/20 flex items-center gap-2">
+            <span>+ Хаттама жүктеу</span>
+          </button>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs" id="protocolsCategoryContainer"></div>
+      </section>
+
+      <section id="plans" class="page hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-extrabold text-slate-900">📅 Жоспарлар</h1>
+            <p class="text-xs text-slate-500 mt-1">Жылдық, тоқсандық, тәрбиелік және пәндік жұмыс жоспарлары</p>
+          </div>
+          <button onclick="openDocModalForCategory('Жоспарлар')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition shadow-md shadow-brand-600/20 flex items-center gap-2">
+            <span>+ Жоспар жүктеу</span>
+          </button>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs" id="plansCategoryContainer"></div>
+      </section>
+
+      <section id="reports" class="page hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-extrabold text-slate-900">📊 Есептер</h1>
+            <p class="text-xs text-slate-500 mt-1">Білім сапасы, тоқсандық қорытындылар мен аналитикалық есептемелер</p>
+          </div>
+          <button onclick="openDocModalForCategory('Есептер')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition shadow-md shadow-brand-600/20 flex items-center gap-2">
+            <span>+ Есеп жүктеу</span>
+          </button>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs" id="reportsCategoryContainer"></div>
+      </section>
+
+      <!-- PAGE: Search -->
+      <section id="search" class="page hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
+          <h1 class="text-2xl font-extrabold text-slate-900">🔎 Құжаттарды іздеу</h1>
+          <p class="text-xs text-slate-500 mt-1">Мектептің барлық электрондық архиві бойынша кеңейтілген іздеу</p>
+          
+          <div class="mt-4 flex flex-col sm:flex-row gap-3">
+            <input id="globalSearchInput" type="text" placeholder="Құжат атауы, мәтін үзіндісі немесе автор..." class="flex-1 border border-slate-300 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+            <button onclick="executeGlobalSearch()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl text-xs transition shadow-md shadow-brand-600/20">
+              Іздеу
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs" id="searchResultsContainer">
+          <div class="text-center py-12 text-slate-400 space-y-2">
+            <span class="text-5xl block">🔍</span>
+            <p class="text-sm font-semibold text-slate-600">Іздеу сұранысын енгізіңіз</p>
+            <p class="text-xs">Жоғарыдағы өріске қажетті құжат атауын немесе кілт сөзді жазыңыз.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE: Users -->
+      <section id="users" class="page hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
+          <h1 class="text-2xl font-extrabold text-slate-900">👤 Мектеп ұжымы және пайдаланушылар</h1>
+          <p class="text-xs text-slate-500 mt-1">Платформаға тіркелген педагогтар мен әкімшілік құрамы</p>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <th class="pb-3">Аты-жөні</th>
+                <th class="pb-3">Қызметі / Рөлі</th>
+                <th class="pb-3">Бөлімі</th>
+                <th class="pb-3">Статусы</th>
+                <th class="pb-3 text-right">Әрекет</th>
+              </tr>
+            </thead>
+            <tbody id="usersListTable" class="text-xs divide-y divide-slate-100">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PAGE: Settings -->
+      <section id="settings" class="page hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
+          <h1 class="text-2xl font-extrabold text-slate-900">⚙️ Баптаулар және деректерді басқару</h1>
+          <p class="text-xs text-slate-500 mt-1">Электрондық жүйе параметрлері мен резервтік сақтау</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
+            <h3 class="font-bold text-slate-900 text-sm border-b border-slate-100 pb-3">🏫 Мектеп реквизиттері</h3>
+            <div class="space-y-3 text-xs">
+              <div>
+                <label class="block font-medium text-slate-600 mb-1">Мектеп атауы</label>
+                <input type="text" value="«№19 орта мектеп» МКМ" readonly class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700">
+              </div>
+              <div>
+                <label class="block font-medium text-slate-600 mb-1">Аймақ / Қала</label>
+                <input type="text" value="Алматы қ., Бостандық ауданы" readonly class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700">
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
+            <h3 class="font-bold text-slate-900 text-sm border-b border-slate-100 pb-3">💾 Деректерді қалпына келтіру және экспорты</h3>
+            <p class="text-xs text-slate-600">Барлық құжаттар сіздің браузеріңіздің браузерлік сақтау қоймасында (IndexedDB + LocalStorage) сақталады.</p>
+            <div class="pt-2 flex flex-wrap gap-3">
+              <button onclick="exportSystemData()" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition">
+                📥 Деректерді файлға көшіру (.json)
+              </button>
+              <button onclick="resetToSeedDocs()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-semibold text-xs px-4 py-2.5 rounded-xl transition">
+                🔄 Бастапқы күйге келтіру
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- MODAL: Add New Document -->
+<div id="docModal" class="fixed inset-0 bg-slate-950/70 z-50 hidden backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+  <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden transform transition-all my-8">
+    <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">✍️</span>
+        <div>
+          <h3 class="font-bold text-sm">Жаңа құжат қосу / тіркеу</h3>
+          <p class="text-[11px] text-slate-400">Мәтін жазыңыз немесе дайын файлды (PDF, DOCX) тіркеңіз</p>
+        </div>
+      </div>
+      <button onclick="closeDocModal()" class="text-slate-400 hover:text-white text-xl p-1 rounded-lg">✕</button>
+    </div>
+
+    <form id="addDocForm" onsubmit="saveDocument(event)" class="p-6 space-y-4 text-xs">
+      <div>
+        <label class="block font-bold text-slate-700 mb-1">Құжат атауы <span class="text-rose-500">*</span></label>
+        <input id="docTitle" type="text" required placeholder="Мысалы: 2026-2027 оқу жылына арналған жұмыс жоспары" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Бөлім / Санат <span class="text-rose-500">*</span></label>
+          <select id="docCategory" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:border-brand-500 bg-white">
+            <option value="Оқу процесі">Оқу процесі</option>
+            <option value="Кадрлық құжаттар">Кадрлық құжаттар</option>
+            <option value="Қаржылық құжаттар">Қаржылық құжаттар</option>
+            <option value="Бұйрықтар">Бұйрықтар</option>
+            <option value="Хаттамалар">Хаттамалар</option>
+            <option value="Жоспарлар">Жоспарлар</option>
+            <option value="Есептер">Есептер</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Құжат мәртебесі</label>
+          <select id="docStatus" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:border-brand-500 bg-white">
+            <option value="Бекітілді">✅ Бекітілді</option>
+            <option value="Қарауда">⏱️ Қарауда</option>
+            <option value="Жоба">📝 Жоба</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-bold text-slate-700 mb-1">Құжаттың толық мәтіні (қолмен енгізу)</label>
+        <textarea id="docText" rows="6" placeholder="Құжат мазмұнын, бұйрық мәтінін немесе хаттама шешімін осы жерге жазыңыз..." class="w-full border border-slate-300 rounded-xl p-3 text-xs outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 font-sans"></textarea>
+      </div>
+
+      <!-- File Attachment Input -->
+      <div class="border-2 border-dashed border-slate-200 rounded-2xl p-4 bg-slate-50/80 text-center space-y-2">
+        <span class="text-2xl block">📎</span>
+        <div>
+          <label for="docFile" class="font-bold text-brand-600 hover:text-brand-700 cursor-pointer">Файлды компьютерден таңдаңыз</label>
+          <p class="text-[11px] text-slate-400 mt-0.5">PDF, Word, Excel, PowerPoint, TXT немесе сурет файлдары (15 МБ дейін)</p>
+        </div>
+        <input id="docFile" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png" class="hidden" onchange="updateFileNameDisplay(this)">
+        <p id="selectedFileName" class="text-xs font-semibold text-emerald-600 hidden"></p>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+        <button type="button" onclick="closeDocModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 font-semibold text-xs transition">
+          Болдырмау
+        </button>
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs transition shadow-md shadow-brand-600/20">
+          💾 Құжатты сақтау
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL: View / Print Document -->
+<div id="viewDocModal" class="fixed inset-0 bg-slate-950/70 z-50 hidden backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+  <div id="printableDocModal" class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden transform transition-all my-8 flex flex-col max-h-[90vh]">
+    <!-- Modal Header -->
+    <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between no-print flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <span id="viewDocIcon" class="text-2xl">📄</span>
+        <div>
+          <h3 id="viewDocHeaderTitle" class="font-bold text-sm truncate max-w-md">Құжатты қарау</h3>
+          <p id="viewDocMeta" class="text-[11px] text-slate-400">Бөлім: -</p>
+        </div>
+      </div>
+      <button onclick="closeViewDocModal()" class="text-slate-400 hover:text-white text-xl p-1 rounded-lg">✕</button>
+    </div>
+
+    <!-- Modal Scrollable Content -->
+    <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6 text-xs text-slate-800">
+      <!-- Title Block -->
+      <div class="border-b border-slate-200 pb-4">
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <span id="viewDocCategoryBadge" class="bg-brand-50 text-brand-700 font-bold px-2.5 py-1 rounded-lg text-[10px]">Бөлім</span>
+          <span id="viewDocStatusBadge" class="bg-emerald-50 text-emerald-700 font-bold px-2.5 py-1 rounded-lg text-[10px]">Бекітілді</span>
+        </div>
+        <h1 id="viewDocTitle" class="text-xl font-black text-slate-900 leading-snug">Құжат атауы</h1>
+        <div class="flex flex-wrap items-center gap-4 text-slate-400 text-[11px] mt-3">
+          <span>✍️ Автор: <strong id="viewDocAuthor" class="text-slate-700">Айнагуль Галымжановна</strong></span>
+          <span>📅 Уақыты: <strong id="viewDocDate" class="text-slate-700">12.08.2026</strong></span>
+          <span>Формат: <strong id="viewDocFormat" class="text-slate-700">PDF</strong></span>
+        </div>
+      </div>
+
+      <!-- Main Text Box -->
+      <div class="space-y-2">
+        <h4 class="font-bold text-slate-900 uppercase tracking-wider text-[10px]">Құжат мәтіні</h4>
+        <div id="viewDocBody" class="bg-slate-50 border border-slate-200 rounded-xl p-5 font-sans leading-relaxed text-slate-700 whitespace-pre-wrap min-h-[140px]">
+          Мәтін жоқ.
+        </div>
+      </div>
+
+      <!-- Attachment File Card -->
+      <div id="viewDocAttachmentCard" class="bg-blue-50/60 border border-blue-100 rounded-xl p-4 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 overflow-hidden">
+          <div class="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-lg flex-shrink-0">📎</div>
+          <div class="truncate">
+            <h5 id="viewDocFileName" class="font-bold text-slate-800 truncate">file_name.pdf</h5>
+            <p id="viewDocFileSize" class="text-[10px] text-slate-500">0 КБ</p>
+          </div>
+        </div>
+        <div id="viewDocFileAction" class="no-print">
+          <!-- Button injected dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Actions Footer -->
+    <div class="bg-slate-50 border-t border-slate-200 px-6 py-4 flex items-center justify-between no-print flex-shrink-0">
+      <button id="deleteDocBtn" onclick="deleteCurrentDoc()" class="text-rose-600 hover:bg-rose-50 font-bold text-xs px-3 py-2 rounded-xl border border-rose-200 transition">
+        🗑️ Құжатты жою
+      </button>
+      <div class="flex items-center gap-2">
+        <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 font-semibold text-xs hover:bg-slate-100 transition flex items-center gap-1.5">
+          <span>🖨️ Баспаға шығару</span>
+        </button>
+        <button onclick="closeViewDocModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-white font-bold text-xs hover:bg-slate-900 transition">
+          Жабу
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- USER SWITCHER MODAL -->
+<div id="userSwitchModal" class="fixed inset-0 bg-slate-950/70 z-50 hidden backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+      <h3 class="font-bold text-slate-900 text-sm">Пайдаланушыны ауыстыру</h3>
+      <button onclick="closeUserSwitchModal()" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+    </div>
+    <p class="text-xs text-slate-500">Төмендегі тізімнен рөліңізді таңдаңыз:</p>
+    <div id="userRolesOptions" class="space-y-2 text-xs">
+      <!-- Injected dynamically -->
+    </div>
+  </div>
+</div>
+
+<!-- Toast Alert System -->
+<div id="toast" class="fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl z-50 text-xs font-semibold hidden transform transition-all flex items-center gap-3 border border-slate-800">
+  <span id="toastIcon">ℹ️</span>
+  <span id="toastMsg">Хабарлама</span>
+</div>
+
+<script>
+const DB_NAME = "SchoolDocsDB_v2";
+const STORE_NAME = "docAttachments";
+
+// Pre-seeded Demo School Documents
+const initialSeedDocs = [
+  {
+    id: "doc_seed_1",
+    title: "2026–2027 оқу жылына арналған мектептің жұмыс жоспары.docx",
+    category: "Жоспарлар",
+    text: "Осы жұмыс жоспары «№19 орта мектеп» МКМ-нің 2026-2027 оқу жылындағы оқу-тәрбие процесін ұйымдастырудың негізгі бағыттарын айқындайды.\n\n1. Білім беру мазмұнын жаңарту және цифрландыру.\n2. Оқушылардың білім сапасын арттыру көрсеткіштері.\n3. Педагогтардың біліктілігін арттыру кестесі.",
+    date: "12.08.2026",
+    format: "DOCX",
+    status: "Бекітілді",
+    author: "Бейсенбаева Маржан Жумабековна",
+    attachmentId: null,
+    attachmentName: ""
+  },
+  {
+    id: "doc_seed_1_cat",
+    title: "Педагог-зерттеуші және педагог-сарапшы санаттарын беру куәліктері тізілімі.pdf",
+    category: "Мұғалім санаттары",
+    text: "Мектеп мұғалімдерінің біліктілік санаттарын растайтын куәліктер мен аттестаттау комиссиясының шешімдері тіркелді:\n\n1. Жұмабекова А. - Педагог-зерттеуші\n2. Серікұлы Е. - Педагог-сарапшы\n3. Қанатқызы М. - Педагог-модератор",
+    date: "11.08.2026",
+    format: "PDF",
+    status: "Бекітілді",
+    author: "Бейсенбаева Маржан Жумабековна",
+    attachmentId: null,
+    attachmentName: ""
+  },
+  {
+    id: "doc_seed_2",
+    title: "1-тоқсандық сабақ кестесі және мұғалімдер жүктемесі.pdf",
+    category: "Оқу процесі",
+    text: "Мектеп бойынша 1-4, 5-9, 10-11 сыныптардың сабақ кестесі бекітілсін.\nСабақтардың басталуы: 08:30.\nӘр сабақтың ұзақтығы: 45 минут.",
+    date: "10.08.2026",
+    format: "PDF",
+    status: "Бекітілді",
+    author: "Ерлан Серікұлы",
+    attachmentId: null,
+    attachmentName: ""
+  },
+  {
+    id: "doc_seed_3",
+    title: "Білім сапасы мен үлгерім динамикасы бойынша есеп.xlsx",
+    category: "Есептер",
+    text: "Өткен оқу жылының қорытындысы бойынша мектептің жалпы білім сапасы 68.4% құрады.\n\nПәндер бойынша талдау:\n- Математика: 65%\n- Қазақ тілі мен әдебиеті: 74%\n- Ағылшын тілі: 70%",
+    date: "08.08.2026",
+    format: "XLSX",
+    status: "Бекітілді",
+    author: "Меруерт Қанатқызы",
+    attachmentId: null,
+    attachmentName: ""
+  },
+  {
+    id: "doc_seed_4",
+    title: "Мектеп директорының №48 негізгі қызметтік бұйрығы.pdf",
+    category: "Бұйрықтар",
+    text: "БҰЙЫРАМЫН:\n1. Жаңа оқу жылына дайындық жөніндегі комиссия құрамы бекітілсін.\n2. Сынып жетекшілеріне оқу кабинеттерін қабылдау жүктелсін.\n3. Осы бұйрықтың орындалуын бақылауды өзіме қалдырамын.",
+    date: "06.08.2026",
+    format: "PDF",
+    status: "Бекітілді",
+    author: "Айнагуль Галымжановна",
+    attachmentId: null,
+    attachmentName: ""
+  },
+  {
+    id: "doc_seed_5",
+    title: "Педагогикалық кеңестің №1 хаттамасы.docx",
+    category: "Хаттамалар",
+    text: "ҚАТЫСҚАНДАР: Мектеп директоры, оқу ісі орынбасарлары, 42 педагог.\n\nКҮН ТӘРТІБІ:\n1. Өткен оқу жылының қорытындылары.\n2. Жаңа оқу жылына арналған міндеттер.\n\nШЕШІМ:\nЖұмыс жоспары бірауыздан мақұлдансын.",
+    date: "05.08.2026",
+    format: "DOCX",
+    status: "Бекітілді",
+    author: "Данияр Нұрланұлы",
+    attachmentId: null,
+    attachmentName: ""
+  }
+];
+
+// Seed Staff Users
+const seedUsers = [
+  { name: "Бейсенбаева Маржан Жумабековна", role: "Директор", dept: "Әкімшілік", status: "Белсенді", avatar: "👩‍💼" },
+  { name: "Ерлан Серікұлы", role: "Оқу ісі орынбасары", dept: "Оқу процесі", status: "Белсенді", avatar: "👨‍🏫" },
+  { name: "Меруерт Қанатқызы", role: "Әдіскер", dept: "Әдістемелік бөлім", status: "Белсенді", avatar: "👩‍🏫" },
+  { name: "Гүлнар Асқарқызы", role: "Тәрбие ісі орынбасары", dept: "Тәрбие жұмысы", status: "Белсенді", avatar: "👩‍🏫" },
+  { name: "Данияр Нұрланұлы", role: "Іс жүргізуші", dept: "Кеңсе / Архив", status: "Белсенді", avatar: "👨‍💼" }
+];
+
+let currentUser = JSON.parse(localStorage.getItem("activeSchoolUser"));
+if (!currentUser || currentUser.name === "Айнагуль Галымжановна" || currentUser.name === "Айгүл Бақытқызы") {
+  currentUser = seedUsers[0];
+}
+
+let appDocs = JSON.parse(localStorage.getItem("schoolDocs_v2"));
+if (!appDocs) {
+  appDocs = initialSeedDocs;
+} else {
+  // Update previous author entries if default user changed
+  appDocs = appDocs.map(d => {
+    if (d.author === "Айнагуль Галымжановна" || d.author === "Айгүл Бақытқызы") d.author = "Бейсенбаева Маржан Жумабековна";
+    return d;
+  });
+}
+let currentActiveViewDocId = null;
+
+/* IndexedDB Initialization */
+function initDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, 1);
+    request.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: "id" });
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function saveFileToIndexedDB(id, file) {
+  if (!file) return;
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readwrite");
+    const store = tx.objectStore(STORE_NAME);
+    store.put({
+      id: id,
+      name: file.name,
+      type: file.type || "application/octet-stream",
+      size: file.size,
+      blob: file
+    });
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function getFileFromIndexedDB(id) {
+  if (!id) return null;
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readonly");
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.get(id);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function deleteFileFromIndexedDB(id) {
+  if (!id) return;
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readwrite");
+    const store = tx.objectStore(STORE_NAME);
+    store.delete(id);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+/* Save Docs to LocalStorage */
+function saveDocsState() {
+  localStorage.setItem("schoolDocs_v2", JSON.stringify(appDocs));
+  renderAllViews();
+}
+
+/* Helper UI Utilities */
+function escapeHtml(str) {
+  return String(str || "").replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
+}
+
+function getFormatIcon(fmt) {
+  const f = (fmt || "").toUpperCase();
+  if (f.includes("PDF")) return "📕";
+  if (f.includes("XLS")) return "📗";
+  if (f.includes("DOC")) return "📘";
+  if (f.includes("PPT")) return "📙";
+  if (f.includes("PNG") || f.includes("JPG")) return "🖼️";
+  return "📄";
+}
+
+function formatBytes(bytes) {
+  if (!bytes) return "0 Б";
+  const k = 1024;
+  const sizes = ["Б", "КБ", "МБ", "ГБ"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+}
+
+function showToast(msg, icon = "ℹ️") {
+  const toast = document.getElementById("toast");
+  document.getElementById("toastMsg").textContent = msg;
+  document.getElementById("toastIcon").textContent = icon;
+  toast.classList.remove("hidden");
+  setTimeout(() => toast.classList.add("hidden"), 3000);
+}
+
+/* Navigation Routing */
+function navigateToPage(pageId) {
+  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+  const target = document.getElementById(pageId);
+  if (target) target.classList.remove("hidden");
+
+  document.querySelectorAll("#mainNav .nav-link").forEach(link => {
+    if (link.dataset.page === pageId) {
+      link.className = "nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer text-white bg-brand-600 shadow-md shadow-brand-600/20 transition-all";
+    } else {
+      link.className = "nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-slate-800/80 hover:text-white transition-all text-slate-300";
+    }
+  });
+
+  // Close mobile menu if open
+  document.getElementById("sidebar").classList.add("-translate-x-full");
+  document.getElementById("sidebarBackdrop").classList.add("hidden");
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* User Switcher Functionality */
+function updateActiveUserUI() {
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Бөлім / Санат <span class="text-rose-500">*</span></label>
+          <select id="docCategory" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:border-brand-500 bg-white">
+            <option value="Оқу процесі">Оқу процесі</option>
+            <option value="Кадрлық құжаттар">Кадрлық құжаттар</option>
+            <option value="Мұғалім санаттары">Мұғалім санаттары</option>
+            <option value="Қаржылық құжаттар">Қаржылық құжаттар</option>
+            <option value="Бұйрықтар">Бұйрықтар</option>
+            <option value="Хаттамалар">Хаттамалар</option>
+            <option value="Жоспарлар">Жоспарлар</option>
+            <option value="Есептер">Есептер</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="text-slate-800">${escapeHtml(u.name)}</div>
+          <div class="text-[11px] text-slate-400 font-normal">${escapeHtml(u.role)}</div>
+        </div>
+      </div>
+      ${u.name === currentUser.name ? '<span class="text-brand-600">✓</span>' : ''}
+    </div>
+  `).join("");
+  document.getElementById("userSwitchModal").classList.remove("hidden");
+}
+
+function closeUserSwitchModal() {
+  document.getElementById("userSwitchModal").classList.add("hidden");
+}
+
+function selectUser(name) {
+  const found = seedUsers.find(u => u.name === name);
+  if (found) {
+    currentUser = found;
+    updateActiveUserUI();
+    closeUserSwitchModal();
+    showToast(`Қолданушы ауыстырылды: ${currentUser.name}`);
+  }
+}
+
+/* Documents Table HTML Generator */
+function generateDocsTableHTML(docList) {
+  if (!docList || docList.length === 0) {
+    return `
+      <div class="text-center py-12 text-slate-400 space-y-2">
+        <span class="text-4xl block">📂</span>
+        <p class="text-xs font-semibold text-slate-600">Бұл жерде құжаттар жоқ</p>
+        <p class="text-[11px]">«Жаңа құжат қосу» батырмасын басып құжат енгізіңіз.</p>
+      </div>
+    `;
+  }
+
+  return `
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+          <th class="pb-3">Құжат атауы</th>
+          <th class="pb-3">Бөлімі</th>
+          <th class="pb-3">Уақыты</th>
+          <th class="pb-3">Автор</th>
+          <th class="pb-3 text-right">Әрекет</th>
+        </tr>
+      </thead>
+      <tbody class="text-xs divide-y divide-slate-100">
+        ${docList.map(d => `
+          <tr class="hover:bg-slate-50/80 transition">
+            <td class="py-3 pr-3 font-semibold text-slate-800">
+              <div class="flex items-center gap-2.5">
+                <span class="text-lg flex-shrink-0">${getFormatIcon(d.format)}</span>
+                <span class="truncate max-w-xs sm:max-w-md" title="${escapeHtml(d.title)}">${escapeHtml(d.title)}</span>
+                ${d.attachmentName ? '<span class="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded font-medium">📎 Файл</span>' : ''}
+              </div>
+            </td>
+            <td class="py-3 text-slate-500 whitespace-nowrap">
+              <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-[10px] font-medium">${escapeHtml(d.category)}</span>
+            </td>
+            <td class="py-3 text-slate-400 whitespace-nowrap text-[11px]">${d.date}</td>
+            <td class="py-3 text-slate-600 whitespace-nowrap">${escapeHtml(d.author || "Мұғалім")}</td>
+            <td class="py-3 text-right whitespace-nowrap">
+              <button onclick="openViewDocModal('${d.id}')" class="bg-brand-50 hover:bg-brand-100 text-brand-700 font-bold px-3 py-1.5 rounded-lg text-xs transition">
+                Ашу →
+              </button>
+            </td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+/* Master Render View Engine */
+function renderAllViews() {
+  // Update Counts
+  const total = appDocs.length;
+  const mine = appDocs.filter(d => d.author === currentUser.name).length;
+  const withFiles = appDocs.filter(d => d.attachmentName).length;
+  const pending = appDocs.filter(d => d.status === "Қарауда").length;
+
+  document.getElementById("statTotal").textContent = total;
+  document.getElementById("statMine").textContent = mine;
+  document.getElementById("statFiles").textContent = withFiles;
+  document.getElementById("statPending").textContent = pending;
+  document.getElementById("badgeMine").textContent = mine;
+
+  // Category counts
+  const getCatCount = (cat) => appDocs.filter(d => d.category === cat).length;
+  document.getElementById("catCountEducation").textContent = `${getCatCount("Оқу процесі")} құжат`;
+  document.getElementById("catCountStaff").textContent = `${getCatCount("Кадрлық құжаттар")} құжат`;
+  document.getElementById("catCountCategories").textContent = `${getCatCount("Мұғалім санаттары")} құжат`;
+  document.getElementById("catCountFinance").textContent = `${getCatCount("Қаржылық құжаттар")} құжат`;
+  document.getElementById("catCountOrders").textContent = `${getCatCount("Бұйрықтар")} құжат`;
+  document.getElementById("catCountProtocols").textContent = `${getCatCount("Хаттамалар")} құжат`;
+  document.getElementById("catCountPlans").textContent = `${getCatCount("Жоспарлар")} құжат`;
+  document.getElementById("catCountReports").textContent = `${getCatCount("Есептер")} құжат`;
+  document.getElementById("catCountMine").textContent = `${mine} құжат`;
+
+  // Render Recent Docs on Home
+  document.getElementById("homeRecentDocsContainer").innerHTML = generateDocsTableHTML(appDocs.slice(0, 5));
+
+  // Render My Docs
+  filterMineDocs();
+
+  // Render Subcategory Containers
+  document.getElementById("educationCategoryContainer").innerHTML = generateDocsTableHTML(appDocs.filter(d => d.category === "Оқу процесі"));
+  document.getElementById("staffCategoryContainer").innerHTML = generateDocsTableHTML(appDocs.filter(d => d.category === "Кадрлық құжаттар"));
+  document.getElementById("categoriesCategoryContainer").innerHTML = generateDocsTableHTML(appDocs.filter(d => d.category === "Мұғалім санаттары"));
+  document.getElementById("financeCategoryContainer").innerHTML = generateDocsTableHTML(appDocs.filter(d => d.category === "Қаржылық құжаттар"));
+  document.getElementById("ordersCategoryContainer").innerHTML = generateDocsTableHTML(appDocs.filter(d => d.category === "Бұйрықтар"));
+  document.getElementById("protocolsCategoryContainer").innerHTML = generateDocsTableHTML(appDocs.filter(d => d.category === "Хаттамалар"));
+  document.getElementById("plansCategoryContainer").innerHTML = generateDocsTableHTML(appDocs.filter(d => d.category === "Жоспарлар"));
+  document.getElementById("reportsCategoryContainer").innerHTML = generateDocsTableHTML(appDocs.filter(d => d.category === "Есептер"));
+
+  // Render Users List
+  renderUsersList();
+}
